@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AQL大会情報</title>
+    <title>AQLInfoHub - AQL大会情報整理ツール</title>
     <style>
         * {
             margin: 0;
@@ -11,631 +12,623 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-            line-height: 1.6;
-            padding-bottom: 80px;
-        }
+```
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #333;
+    }
 
-        .header {
-            background: linear-gradient(135deg, #2563eb, #3b82f6);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .header h1 {
+        color: white;
+        font-size: 2.5rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        margin-bottom: 10px;
+    }
+
+    .header p {
+        color: rgba(255,255,255,0.9);
+        font-size: 1.1rem;
+    }
+
+    .filters {
+        background: rgba(255,255,255,0.95);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        backdrop-filter: blur(10px);
+    }
+
+    .filter-group {
+        margin-bottom: 20px;
+    }
+
+    .filter-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .filter-title {
+        font-weight: bold;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+        color: #4a5568;
+    }
+
+    .filter-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .filter-option {
+        display: flex;
+        align-items: center;
+        background: #f7fafc;
+        padding: 8px 12px;
+        border-radius: 20px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .filter-option:hover {
+        background: #edf2f7;
+        transform: translateY(-1px);
+    }
+
+    .filter-option.active {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border-color: #667eea;
+    }
+
+    .filter-option input[type="checkbox"] {
+        margin-right: 8px;
+        transform: scale(1.2);
+    }
+
+    .all-select {
+        background: #e2e8f0 !important;
+        border: 2px solid #cbd5e0;
+        font-weight: bold;
+    }
+
+    .all-select.active {
+        background: linear-gradient(135deg, #48bb78, #38a169) !important;
+        border-color: #38a169;
+    }
+
+    .tournament-count {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.1rem;
+        color: white;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+
+    .tournaments {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 20px;
+    }
+
+    .tournament-card {
+        background: rgba(255,255,255,0.95);
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        backdrop-filter: blur(10px);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .tournament-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    }
+
+    .tournament-name {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #2d3748;
+        margin-bottom: 15px;
+        line-height: 1.3;
+    }
+
+    .tournament-info {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 8px;
+        margin-bottom: 15px;
+    }
+
+    .info-label {
+        font-weight: bold;
+        color: #4a5568;
+        min-width: 80px;
+    }
+
+    .info-value {
+        color: #2d3748;
+    }
+
+    .division-badge, .grade-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: bold;
+    }
+
+    .division-badge.general {
+        background: #bee3f8;
+        color: #2c5282;
+    }
+
+    .division-badge.junior {
+        background: #c6f6d5;
+        color: #22543d;
+    }
+
+    .grade-badge.top {
+        background: #fed7d7;
+        color: #c53030;
+    }
+
+    .grade-badge.challenge {
+        background: #fef5e7;
+        color: #c05621;
+    }
+
+    .tournament-links {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .link-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 12px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .link-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .link-btn::before {
+        content: "🔗";
+        margin-right: 6px;
+    }
+
+    .result-btn {
+        background: linear-gradient(135deg, #48bb78, #38a169);
+    }
+
+    .result-btn:hover {
+        box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+    }
+
+    .result-btn::before {
+        content: "📊";
+    }
+
+    .no-results {
+        text-align: center;
+        color: white;
+        font-size: 1.2rem;
+        margin-top: 40px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 15px;
         }
 
         .header h1 {
-            font-size: 24px;
-            margin-bottom: 15px;
-            font-weight: 700;
+            font-size: 2rem;
         }
 
-        .selectors {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .selector {
-            flex: 1;
-            min-width: 120px;
-            max-width: 200px;
-        }
-
-        .selector select {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            background: white;
-            color: #333;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .content {
-            max-width: 800px;
-            margin: 0 auto;
+        .filters {
             padding: 20px;
         }
 
-        .section {
-            display: none;
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        .filter-options {
+            gap: 8px;
         }
 
-        .section.active {
-            display: block;
+        .filter-option {
+            font-size: 0.9rem;
+            padding: 6px 10px;
         }
 
-        .section h2 {
-            color: #2563eb;
-            margin-bottom: 20px;
-            font-size: 22px;
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 10px;
-        }
-
-        .home-info {
-            margin-bottom: 25px;
-        }
-
-        .home-info h3 {
-            color: #1f2937;
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-
-        .home-info p {
-            margin-bottom: 15px;
-            font-size: 16px;
-        }
-
-        .schedule-grid {
-            display: grid;
+        .tournaments {
+            grid-template-columns: 1fr;
             gap: 15px;
         }
 
-        .schedule-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .tournament-card {
             padding: 15px;
-            background: #f1f5f9;
-            border-radius: 8px;
-            border-left: 4px solid #2563eb;
         }
 
-        .schedule-item strong {
-            color: #1f2937;
-            font-size: 16px;
+        .tournament-name {
+            font-size: 1.1rem;
         }
 
-        .schedule-item span {
-            color: #2563eb;
-            font-weight: 600;
-            font-size: 16px;
-        }
-
-        .rules-grid {
-            display: grid;
-            gap: 20px;
-        }
-
-        .rule-item {
-            background: #f8fafc;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .rule-item h4 {
-            color: #1e40af;
-            margin-bottom: 8px;
-            font-size: 16px;
-        }
-
-        .rule-item p {
-            color: #475569;
-            font-size: 15px;
-        }
-
-        .manners-list {
-            display: grid;
-            gap: 15px;
-        }
-
-        .manner-item {
-            background: #fef3c7;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #f59e0b;
-        }
-
-        .manner-item h4 {
-            color: #92400e;
-            margin-bottom: 8px;
-            font-size: 16px;
-        }
-
-        .manner-item p {
-            color: #78350f;
-            font-size: 15px;
-        }
-
-        .faq-list {
-            display: grid;
-            gap: 15px;
-        }
-
-        .faq-item {
-            background: #f0f9ff;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid #e0f2fe;
-        }
-
-        .faq-question {
-            background: #0ea5e9;
-            color: white;
-            padding: 15px;
-            font-weight: 600;
-            font-size: 16px;
-        }
-
-        .faq-answer {
-            padding: 15px;
-            background: white;
-            color: #1f2937;
-            font-size: 15px;
-        }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            border-top: 1px solid #e5e7eb;
-            padding: 10px 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-        }
-
-        .nav-buttons {
-            display: flex;
-            justify-content: space-around;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .nav-btn {
-            background: none;
-            border: none;
-            padding: 8px 4px;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-            display: flex;
+        .tournament-links {
             flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            min-width: 60px;
-            color: #6b7280;
         }
+    }
+</style>
+```
 
-        .nav-btn.active {
-            background: #eff6ff;
-            color: #2563eb;
-        }
-
-        .nav-btn:hover {
-            background: #f3f4f6;
-        }
-
-        .nav-btn.active:hover {
-            background: #dbeafe;
-        }
-
-        .nav-icon {
-            width: 20px;
-            height: 20px;
-            margin-bottom: 2px;
-        }
-
-        .nav-text {
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .error-message {
-            text-align: center;
-            color: #ef4444;
-            padding: 40px;
-            font-size: 16px;
-            background: #fef2f2;
-            border-radius: 8px;
-            margin: 20px;
-        }
-
-        @media (max-width: 640px) {
-            .header {
-                padding: 15px;
-            }
-            
-            .header h1 {
-                font-size: 20px;
-            }
-            
-            .selectors {
-                flex-direction: column;
-                gap: 8px;
-            }
-            
-            .selector {
-                max-width: none;
-            }
-            
-            .content {
-                padding: 15px;
-            }
-            
-            .section {
-                padding: 20px;
-            }
-            
-            .nav-buttons {
-                padding: 0 10px;
-            }
-            
-            .nav-btn {
-                min-width: 50px;
-                padding: 8px 2px;
-            }
-            
-            .nav-text {
-                font-size: 11px;
-            }
-        }
-    </style>
 </head>
 <body>
-    <div class="header">
-        <h1>AQL大会情報</h1>
-        <div class="selectors">
-            <div class="selector">
-                <select id="regionSelect">
-                    <option value="">地域を選択</option>
-                </select>
-            </div>
-            <div class="selector">
-                <select id="divisionSelect">
-                    <option value="">部門を選択</option>
-                </select>
-            </div>
-            <div class="selector">
-                <select id="leagueSelect">
-                    <option value="">リーグを選択</option>
-                </select>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-        <div id="errorMessage" class="error-message" style="display: none;">
-            地域・部門・リーグを選択してください
+    <div class="container">
+        <div class="header">
+            <h1>AQLInfoHub</h1>
+            <p>AQL大会情報を簡単検索・整理</p>
         </div>
 
-        <div id="homeSection" class="section active">
-            <h2>大会情報</h2>
-            <div class="home-info">
-                <h3 id="tournamentName">大会名</h3>
-                <p><strong>開催日：</strong><span id="tournamentDate">-</span></p>
-                <p><strong>会場：</strong><span id="tournamentLocation">-</span></p>
-                <p><strong>趣旨：</strong><span id="tournamentDescription">-</span></p>
-                <p><strong>使い方：</strong><span id="tournamentUsage">-</span></p>
+```
+    <div class="filters">
+        <div class="filter-group">
+            <div class="filter-title">地域</div>
+            <div class="filter-options" id="regionFilters">
+                <label class="filter-option all-select">
+                    <input type="checkbox" id="allRegions"> すべて選択
+                </label>
             </div>
         </div>
 
-        <div id="scheduleSection" class="section">
-            <h2>タイムスケジュール</h2>
-            <div id="scheduleContent" class="schedule-grid">
+        <div class="filter-group">
+            <div class="filter-title">区分</div>
+            <div class="filter-options" id="divisionFilters">
+                <label class="filter-option all-select">
+                    <input type="checkbox" id="allDivisions"> すべて選択
+                </label>
             </div>
         </div>
 
-        <div id="rulesSection" class="section">
-            <h2>ルール</h2>
-            <div id="rulesContent" class="rules-grid">
-            </div>
-        </div>
-
-        <div id="mannersSection" class="section">
-            <h2>マナー・注意事項</h2>
-            <div id="mannersContent" class="manners-list">
-            </div>
-        </div>
-
-        <div id="faqSection" class="section">
-            <h2>よくある質問</h2>
-            <div id="faqContent" class="faq-list">
+        <div class="filter-group">
+            <div class="filter-title">グレード</div>
+            <div class="filter-options" id="gradeFilters">
+                <label class="filter-option all-select">
+                    <input type="checkbox" id="allGrades"> すべて選択
+                </label>
             </div>
         </div>
     </div>
 
-    <div class="bottom-nav">
-        <div class="nav-buttons">
-            <button class="nav-btn active" data-section="homeSection">
-                <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
-                </svg>
-                <span class="nav-text">ホーム</span>
-            </button>
-            <button class="nav-btn" data-section="scheduleSection">
-                <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
-                </svg>
-                <span class="nav-text">スケジュール</span>
-            </button>
-            <button class="nav-btn" data-section="rulesSection">
-                <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
-                </svg>
-                <span class="nav-text">ルール</span>
-            </button>
-            <button class="nav-btn" data-section="mannersSection">
-                <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                </svg>
-                <span class="nav-text">マナー</span>
-            </button>
-            <button class="nav-btn" data-section="faqSection">
-                <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
-                </svg>
-                <span class="nav-text">FAQ</span>
-            </button>
-        </div>
+    <div class="tournament-count" id="tournamentCount"></div>
+
+    <div class="tournaments" id="tournamentsContainer"></div>
+
+    <div class="no-results" id="noResults" style="display: none;">
+        該当する大会が見つかりません
     </div>
+</div>
 
-    <script src="data.js"></script>
-    <script>
-        class TournamentApp {
-            constructor() {
-                this.currentData = null;
-                this.initializeElements();
-                this.initializeEventListeners();
-                this.loadInitialData();
+<script>
+    // データ
+    const tournamentData = [
+        {
+            id: "tokyo-west-jr-2025",
+            name: "AQL東京西部 2025ジュニアの部",
+            date: "2025-12-14",
+            region: "関東",
+            division: "ジュニア",
+            grade: "チャレンジ",
+            location: "東京都立川市",
+            organizer: "AQL東京西部実行委員会",
+            officialSite: "https://aql-tokyo-west.example.com",
+            resultSite: "https://aql-tokyo-west-results.example.com"
+        },
+        {
+            id: "osaka-2025",
+            name: "AQL大阪 2025一般の部",
+            date: "2025-11-23",
+            region: "関西",
+            division: "一般",
+            grade: "トップ",
+            location: "大阪市北区",
+            organizer: "AQL大阪事務局",
+            officialSite: "",
+            resultSite: ""
+        },
+        {
+            id: "yokohama-jr-2025",
+            name: "AQL横浜 2025ジュニアの部チャレンジリーグ",
+            date: "2025-10-15",
+            region: "関東",
+            division: "ジュニア",
+            grade: "チャレンジ",
+            location: "神奈川県横浜市",
+            organizer: "AQL横浜実行委員会",
+            officialSite: "https://aql-yokohama.example.com",
+            resultSite: ""
+        },
+        {
+            id: "sendai-2025",
+            name: "AQL仙台 2025一般の部",
+            date: "2025-09-28",
+            region: "東北",
+            division: "一般",
+            grade: "トップ",
+            location: "宮城県仙台市",
+            organizer: "AQL東北事務局",
+            officialSite: "",
+            resultSite: "https://aql-sendai-results.example.com"
+        },
+        {
+            id: "kyoto-challenge-2025",
+            name: "AQL京都 2025チャレンジリーグ",
+            date: "2025-08-12",
+            region: "関西",
+            division: "一般",
+            grade: "チャレンジ",
+            location: "京都府京都市",
+            organizer: "AQL京都実行委員会",
+            officialSite: "https://aql-kyoto.example.com",
+            resultSite: "https://aql-kyoto-results.example.com"
+        },
+        {
+            id: "nagoya-jr-2025",
+            name: "AQL名古屋 2025ジュニアの部",
+            date: "2025-07-30",
+            region: "中部",
+            division: "ジュニア",
+            grade: "トップ",
+            location: "愛知県名古屋市",
+            organizer: "AQL中部事務局",
+            officialSite: "https://aql-nagoya.example.com",
+            resultSite: ""
+        },
+        {
+            id: "fukuoka-2025",
+            name: "AQL福岡 2025一般の部",
+            date: "2025-06-21",
+            region: "九州",
+            division: "一般",
+            grade: "チャレンジ",
+            location: "福岡県福岡市",
+            organizer: "AQL九州事務局",
+            officialSite: "",
+            resultSite: "https://aql-fukuoka-results.example.com"
+        }
+    ];
+
+    // フィルタの状態を管理
+    let selectedRegions = new Set();
+    let selectedDivisions = new Set();
+    let selectedGrades = new Set();
+
+    // 初期化
+    function init() {
+        setupFilters();
+        displayTournaments();
+    }
+
+    // フィルタの設定
+    function setupFilters() {
+        // 地域フィルタ
+        const regions = [...new Set(tournamentData.map(t => t.region))];
+        setupFilterGroup('regionFilters', 'allRegions', regions, selectedRegions);
+
+        // 区分フィルタ
+        const divisions = [...new Set(tournamentData.map(t => t.division))];
+        setupFilterGroup('divisionFilters', 'allDivisions', divisions, selectedDivisions);
+
+        // グレードフィルタ
+        const grades = [...new Set(tournamentData.map(t => t.grade))];
+        setupFilterGroup('gradeFilters', 'allGrades', grades, selectedGrades);
+
+        // 初期状態ですべて選択
+        selectAll('regions');
+        selectAll('divisions');
+        selectAll('grades');
+    }
+
+    function setupFilterGroup(containerId, allSelectId, options, selectedSet) {
+        const container = document.getElementById(containerId);
+        const allSelectCheckbox = document.getElementById(allSelectId);
+
+        // 全選択チェックボックスのイベント
+        allSelectCheckbox.addEventListener('change', () => {
+            const type = allSelectId.replace('all', '').toLowerCase();
+            if (allSelectCheckbox.checked) {
+                selectAll(type);
+            } else {
+                clearAll(type);
             }
+            displayTournaments();
+        });
 
-            initializeElements() {
-                this.regionSelect = document.getElementById('regionSelect');
-                this.divisionSelect = document.getElementById('divisionSelect');
-                this.leagueSelect = document.getElementById('leagueSelect');
-                this.errorMessage = document.getElementById('errorMessage');
-                this.sections = document.querySelectorAll('.section');
-                this.navButtons = document.querySelectorAll('.nav-btn');
-            }
-
-            initializeEventListeners() {
-                this.regionSelect.addEventListener('change', () => this.onRegionChange());
-                this.divisionSelect.addEventListener('change', () => this.onDivisionChange());
-                this.leagueSelect.addEventListener('change', () => this.onLeagueChange());
-                
-                this.navButtons.forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const sectionId = btn.dataset.section;
-                        this.showSection(sectionId);
-                    });
-                });
-            }
-
-            loadInitialData() {
-                this.populateRegions();
-            }
-
-            populateRegions() {
-                this.regionSelect.innerHTML = '<option value="">地域を選択</option>';
-                Object.keys(tournamentData).forEach(region => {
-                    const option = document.createElement('option');
-                    option.value = region;
-                    option.textContent = region;
-                    this.regionSelect.appendChild(option);
-                });
-            }
-
-            onRegionChange() {
-                const region = this.regionSelect.value;
-                this.divisionSelect.innerHTML = '<option value="">部門を選択</option>';
-                this.leagueSelect.innerHTML = '<option value="">リーグを選択</option>';
-                
-                if (region && tournamentData[region]) {
-                    Object.keys(tournamentData[region]).forEach(division => {
-                        const option = document.createElement('option');
-                        option.value = division;
-                        option.textContent = division;
-                        this.divisionSelect.appendChild(option);
-                    });
-                }
-                this.updateDisplay();
-            }
-
-            onDivisionChange() {
-                const region = this.regionSelect.value;
-                const division = this.divisionSelect.value;
-                this.leagueSelect.innerHTML = '<option value="">リーグを選択</option>';
-                
-                if (region && division && tournamentData[region] && tournamentData[region][division]) {
-                    Object.keys(tournamentData[region][division]).forEach(league => {
-                        const option = document.createElement('option');
-                        option.value = league;
-                        option.textContent = league;
-                        this.leagueSelect.appendChild(option);
-                    });
-                }
-                this.updateDisplay();
-            }
-
-            onLeagueChange() {
-                this.updateDisplay();
-            }
-
-            updateDisplay() {
-                const region = this.regionSelect.value;
-                const division = this.divisionSelect.value;
-                const league = this.leagueSelect.value;
-
-                if (region && division && league && 
-                    tournamentData[region] && 
-                    tournamentData[region][division] && 
-                    tournamentData[region][division][league]) {
-                    
-                    this.currentData = tournamentData[region][division][league];
-                    this.errorMessage.style.display = 'none';
-                    this.renderContent();
+        // 個別オプションを追加
+        options.forEach(option => {
+            const label = document.createElement('label');
+            label.className = 'filter-option';
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = option;
+            checkbox.checked = true;
+            
+            checkbox.addEventListener('change', () => {
+                if (checkbox.checked) {
+                    selectedSet.add(option);
                 } else {
-                    this.currentData = null;
-                    this.errorMessage.style.display = 'block';
-                    this.clearContent();
+                    selectedSet.delete(option);
                 }
-            }
+                updateAllSelectState(containerId, allSelectId, selectedSet, options);
+                displayTournaments();
+            });
 
-            renderContent() {
-                if (!this.currentData) return;
+            label.appendChild(checkbox);
+            label.appendChild(document.createTextNode(option));
+            container.appendChild(label);
+        });
+    }
 
-                this.renderHome();
-                this.renderSchedule();
-                this.renderRules();
-                this.renderManners();
-                this.renderFAQ();
-            }
+    function selectAll(type) {
+        if (type === 'regions') {
+            selectedRegions.clear();
+            tournamentData.forEach(t => selectedRegions.add(t.region));
+            document.getElementById('allRegions').checked = true;
+            updateCheckboxes('regionFilters', selectedRegions);
+        } else if (type === 'divisions') {
+            selectedDivisions.clear();
+            tournamentData.forEach(t => selectedDivisions.add(t.division));
+            document.getElementById('allDivisions').checked = true;
+            updateCheckboxes('divisionFilters', selectedDivisions);
+        } else if (type === 'grades') {
+            selectedGrades.clear();
+            tournamentData.forEach(t => selectedGrades.add(t.grade));
+            document.getElementById('allGrades').checked = true;
+            updateCheckboxes('gradeFilters', selectedGrades);
+        }
+    }
 
-            renderHome() {
-                const home = this.currentData.home;
-                document.getElementById('tournamentName').textContent = home.name;
-                document.getElementById('tournamentDate').textContent = home.date;
-                document.getElementById('tournamentLocation').textContent = home.location;
-                document.getElementById('tournamentDescription').textContent = home.description;
-                document.getElementById('tournamentUsage').textContent = home.usage;
-            }
+    function clearAll(type) {
+        if (type === 'regions') {
+            selectedRegions.clear();
+            updateCheckboxes('regionFilters', selectedRegions);
+        } else if (type === 'divisions') {
+            selectedDivisions.clear();
+            updateCheckboxes('divisionFilters', selectedDivisions);
+        } else if (type === 'grades') {
+            selectedGrades.clear();
+            updateCheckboxes('gradeFilters', selectedGrades);
+        }
+    }
 
-            renderSchedule() {
-                const schedule = this.currentData.schedule;
-                const container = document.getElementById('scheduleContent');
-                container.innerHTML = '';
+    function updateCheckboxes(containerId, selectedSet) {
+        const container = document.getElementById(containerId);
+        const checkboxes = container.querySelectorAll('input[type="checkbox"]:not([id^="all"])');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = selectedSet.has(checkbox.value);
+            checkbox.parentElement.classList.toggle('active', checkbox.checked);
+        });
+    }
 
-                Object.entries(schedule).forEach(([key, value]) => {
-                    const item = document.createElement('div');
-                    item.className = 'schedule-item';
-                    item.innerHTML = `
-                        <strong>${key}</strong>
-                        <span>${value}</span>
-                    `;
-                    container.appendChild(item);
-                });
-            }
+    function updateAllSelectState(containerId, allSelectId, selectedSet, allOptions) {
+        const allSelect = document.getElementById(allSelectId);
+        allSelect.checked = selectedSet.size === allOptions.length;
+        allSelect.parentElement.classList.toggle('active', allSelect.checked);
+    }
 
-            renderRules() {
-                const rules = this.currentData.rules;
-                const container = document.getElementById('rulesContent');
-                container.innerHTML = '';
+    // 大会一覧の表示
+    function displayTournaments() {
+        const container = document.getElementById('tournamentsContainer');
+        const countElement = document.getElementById('tournamentCount');
+        const noResults = document.getElementById('noResults');
 
-                const ruleLabels = {
-                    structure: '大会構成',
-                    pointSystem: 'ポイント制',
-                    tieBreak: '同点決勝',
-                    format: '出題形式',
-                    penalty: 'ペナルティ'
-                };
+        // フィルタリング
+        const filteredTournaments = tournamentData.filter(tournament => {
+            return selectedRegions.has(tournament.region) &&
+                   selectedDivisions.has(tournament.division) &&
+                   selectedGrades.has(tournament.grade);
+        });
 
-                Object.entries(rules).forEach(([key, value]) => {
-                    const item = document.createElement('div');
-                    item.className = 'rule-item';
-                    item.innerHTML = `
-                        <h4>${ruleLabels[key] || key}</h4>
-                        <p>${value}</p>
-                    `;
-                    container.appendChild(item);
-                });
-            }
+        // 件数表示
+        countElement.textContent = `${filteredTournaments.length}件の大会が見つかりました`;
 
-            renderManners() {
-                const manners = this.currentData.manners;
-                const container = document.getElementById('mannersContent');
-                container.innerHTML = '';
-
-                const mannerLabels = {
-                    eating: '飲食について',
-                    viewing: '観戦について',
-                    judgment: '判定について',
-                    challenge: 'チャレンジについて'
-                };
-
-                Object.entries(manners).forEach(([key, value]) => {
-                    const item = document.createElement('div');
-                    item.className = 'manner-item';
-                    item.innerHTML = `
-                        <h4>${mannerLabels[key] || key}</h4>
-                        <p>${value}</p>
-                    `;
-                    container.appendChild(item);
-                });
-            }
-
-            renderFAQ() {
-                const faq = this.currentData.faq;
-                const container = document.getElementById('faqContent');
-                container.innerHTML = '';
-
-                faq.forEach(item => {
-                    const faqElement = document.createElement('div');
-                    faqElement.className = 'faq-item';
-                    faqElement.innerHTML = `
-                        <div class="faq-question">${item.q}</div>
-                        <div class="faq-answer">${item.a}</div>
-                    `;
-                    container.appendChild(faqElement);
-                });
-            }
-
-            clearContent() {
-                document.getElementById('tournamentName').textContent = '大会名';
-                document.getElementById('tournamentDate').textContent = '-';
-                document.getElementById('tournamentLocation').textContent = '-';
-                document.getElementById('tournamentDescription').textContent = '-';
-                document.getElementById('tournamentUsage').textContent = '-';
-                document.getElementById('scheduleContent').innerHTML = '';
-                document.getElementById('rulesContent').innerHTML = '';
-                document.getElementById('mannersContent').innerHTML = '';
-                document.getElementById('faqContent').innerHTML = '';
-            }
-
-            showSection(sectionId) {
-                this.sections.forEach(section => {
-                    section.classList.remove('active');
-                });
-                
-                this.navButtons.forEach(btn => {
-                    btn.classList.remove('active');
-                });
-
-                document.getElementById(sectionId).classList.add('active');
-                document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
-            }
+        if (filteredTournaments.length === 0) {
+            container.style.display = 'none';
+            noResults.style.display = 'block';
+            return;
         }
 
-        // アプリケーション初期化
-        document.addEventListener('DOMContentLoaded', () => {
-            new TournamentApp();
+        container.style.display = 'grid';
+        noResults.style.display = 'none';
+
+        // 日付順にソート
+        filteredTournaments.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        // カードを生成
+        container.innerHTML = filteredTournaments.map(tournament => createTournamentCard(tournament)).join('');
+
+        // フィルタオプションの見た目を更新
+        updateFilterStyles();
+    }
+
+    function createTournamentCard(tournament) {
+        const formattedDate = new Date(tournament.date).toLocaleDateString('ja-JP', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
         });
-    </script>
+
+        const links = [];
+        if (tournament.officialSite) {
+            links.push(`<a href="${tournament.officialSite}" target="_blank" class="link-btn">公式サイト</a>`);
+        }
+        if (tournament.resultSite) {
+            links.push(`<a href="${tournament.resultSite}" target="_blank" class="link-btn result-btn">速報サイト</a>`);
+        }
+
+        return `
+            <div class="tournament-card">
+                <div class="tournament-name">${tournament.name}</div>
+                <div class="tournament-info">
+                    <span class="info-label">開催日:</span>
+                    <span class="info-value">${formattedDate}</span>
+                    <span class="info-label">地域:</span>
+                    <span class="info-value">${tournament.region}</span>
+                    <span class="info-label">区分:</span>
+                    <span class="info-value">
+                        <span class="division-badge ${tournament.division === '一般' ? 'general' : 'junior'}">
+                            ${tournament.division}の部
+                        </span>
+                    </span>
+                    <span class="info-label">グレード:</span>
+                    <span class="info-value">
+                        <span class="grade-badge ${tournament.grade === 'トップ' ? 'top' : 'challenge'}">
+                            ${tournament.grade}リーグ
+                        </span>
+                    </span>
+                    <span class="info-label">開催地:</span>
+                    <span class="info-value">${tournament.location}</span>
+                    <span class="info-label">主催:</span>
+                    <span class="info-value">${tournament.organizer}</span>
+                </div>
+                ${links.length > 0 ? `<div class="tournament-links">${links.join('')}</div>` : ''}
+            </div>
+        `;
+    }
+
+    function updateFilterStyles() {
+        // すべてのフィルタオプションの見た目を更新
+        document.querySelectorAll('.filter-option').forEach(option => {
+            const checkbox = option.querySelector('input[type="checkbox"]');
+            option.classList.toggle('active', checkbox.checked);
+        });
+    }
+
+    // 初期化実行
+    init();
+</script>
+```
+
 </body>
 </html>
