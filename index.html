@@ -241,6 +241,11 @@
     }
 
     @media (max-width: 768px) {
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+        }
+
         .container {
             padding: 15px;
         }
@@ -329,95 +334,8 @@
     </div>
 </div>
 
+<script src="data.js"></script>
 <script>
-    // データ
-    const tournamentData = [
-        {
-            id: "tokyo-west-jr-2025",
-            name: "AQL東京西部 2025ジュニアの部",
-            date: "2025-12-14",
-            region: "関東",
-            division: "ジュニア",
-            grade: "チャレンジ",
-            location: "東京都立川市",
-            organizer: "AQL東京西部実行委員会",
-            officialSite: "https://aql-tokyo-west.example.com",
-            resultSite: "https://aql-tokyo-west-results.example.com"
-        },
-        {
-            id: "osaka-2025",
-            name: "AQL大阪 2025一般の部",
-            date: "2025-11-23",
-            region: "関西",
-            division: "一般",
-            grade: "トップ",
-            location: "大阪市北区",
-            organizer: "AQL大阪事務局",
-            officialSite: "",
-            resultSite: ""
-        },
-        {
-            id: "yokohama-jr-2025",
-            name: "AQL横浜 2025ジュニアの部チャレンジリーグ",
-            date: "2025-10-15",
-            region: "関東",
-            division: "ジュニア",
-            grade: "チャレンジ",
-            location: "神奈川県横浜市",
-            organizer: "AQL横浜実行委員会",
-            officialSite: "https://aql-yokohama.example.com",
-            resultSite: ""
-        },
-        {
-            id: "sendai-2025",
-            name: "AQL仙台 2025一般の部",
-            date: "2025-09-28",
-            region: "東北",
-            division: "一般",
-            grade: "トップ",
-            location: "宮城県仙台市",
-            organizer: "AQL東北事務局",
-            officialSite: "",
-            resultSite: "https://aql-sendai-results.example.com"
-        },
-        {
-            id: "kyoto-challenge-2025",
-            name: "AQL京都 2025チャレンジリーグ",
-            date: "2025-08-12",
-            region: "関西",
-            division: "一般",
-            grade: "チャレンジ",
-            location: "京都府京都市",
-            organizer: "AQL京都実行委員会",
-            officialSite: "https://aql-kyoto.example.com",
-            resultSite: "https://aql-kyoto-results.example.com"
-        },
-        {
-            id: "nagoya-jr-2025",
-            name: "AQL名古屋 2025ジュニアの部",
-            date: "2025-07-30",
-            region: "中部",
-            division: "ジュニア",
-            grade: "トップ",
-            location: "愛知県名古屋市",
-            organizer: "AQL中部事務局",
-            officialSite: "https://aql-nagoya.example.com",
-            resultSite: ""
-        },
-        {
-            id: "fukuoka-2025",
-            name: "AQL福岡 2025一般の部",
-            date: "2025-06-21",
-            region: "九州",
-            division: "一般",
-            grade: "チャレンジ",
-            location: "福岡県福岡市",
-            organizer: "AQL九州事務局",
-            officialSite: "",
-            resultSite: "https://aql-fukuoka-results.example.com"
-        }
-    ];
-
     // フィルタの状態を管理
     let selectedRegions = new Set();
     let selectedDivisions = new Set();
@@ -609,8 +527,6 @@
                     </span>
                     <span class="info-label">開催地:</span>
                     <span class="info-value">${tournament.location}</span>
-                    <span class="info-label">主催:</span>
-                    <span class="info-value">${tournament.organizer}</span>
                 </div>
                 ${links.length > 0 ? `<div class="tournament-links">${links.join('')}</div>` : ''}
             </div>
@@ -626,7 +542,7 @@
     }
 
     // 初期化実行
-    init();
+    window.addEventListener('load', init);
 </script>
 ```
 
